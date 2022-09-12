@@ -11,6 +11,7 @@ function listarEmpleados(){
         success: function(result){
         let empleados=JSON.parse(result);
             if(empleados.length>0){
+                $("#list-empleados tbody").remove();
                 $('#list-empleados').append('<tbody>');
                     for(let i=0; i<empleados.length;i++){
                         $('#list-empleados').
@@ -22,7 +23,7 @@ function listarEmpleados(){
                             '<td>' + empleados[i].desc_area + '</td>'+
                             '<td>' + empleados[i].des_boletin + '</td>'+
                             '<td><a onclick="editarEmpleado('+empleados[i].id+')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>'+
-                            '<td><a onclick="eliminarEmpleado('+empleados[i].id+')"><i class="fa fa-trash" aria-hidden="true"></i></a></td>'+
+                            '<td><a onclick="confirmDelete('+empleados[i].id+')"><i class="fa fa-trash" aria-hidden="true"></i></a></td>'+
                         '</tr>');
                     }
                 $('#list-empleados').append('</tbody>');
@@ -39,6 +40,41 @@ function listarEmpleados(){
 function editarEmpleado(id){
  console.log('aqui edita')
 }
+
+function confirmDelete(id){
+    Swal.fire({
+        title: 'Desea eliminar el empleado?',
+        text: "una vez confirmada esta acción no se podra revertir",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            eliminarEmpleado(id)
+        }
+      })
+}
 function eliminarEmpleado(id){
-    console.log('aqui elimina')
+    $.ajax({
+        url: "model/empleado.php", 
+        type:'post',
+        data: {userId:id},
+        success: function(result){
+        if(result==1){
+            Swal.fire({
+                icon: 'success',
+                title: 'Exito!!',
+                text: 'Empleado eliminado exitosamente'
+              })
+              listarEmpleados();
+        }else{
+            Swal.fire({
+                title: 'Error!',
+                text: 'Problemas al eliminar el empleado',
+                icon: 'error',
+              })
+        }
+      }});
 }

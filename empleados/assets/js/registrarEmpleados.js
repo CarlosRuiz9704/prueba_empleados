@@ -17,7 +17,7 @@ function listarRoles(){
                     for(let i=0; i<roles.length;i++){
                         $('#roles').
                         append(
-                        '<input class="form-check-input roles-check" name="roles" type="checkbox" value="'+roles[i].id+'" id="'+roles[i].id+'">'+
+                        '<input class="form-check-input roles-check" name="roles[]" type="checkbox" value="'+roles[i].id+'" id="'+roles[i].id+'">'+
                         '<label class="form-check-label" for="'+roles[i].id+'">'+roles[i].nombre+'</label></br>'
                         );
                     }
@@ -99,5 +99,23 @@ function saveEmpleado(data){
         type:'post',
         data: {data:data},
         success: function(result){
+            if(result){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Exito!!',
+                    text: 'Registro almacenado correctamente'
+                  })
+
+                  window.setTimeout(function(){
+                    window.location.href = "../index.php";
+            
+                }, 4000);
+            }else{
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Ocurrio un problema all realizar el registro',
+                    icon: 'error',
+                  })
+            }
       }});
 }

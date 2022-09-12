@@ -54,7 +54,7 @@ class cliente
 		}
 	}
 
-	public function Obtener($id)
+	public function getEmpleadoById($id)
 	{
 		try 
 		{
@@ -74,10 +74,20 @@ class cliente
 	{
 		try 
 		{
-			$stm = $this->pdo
-			            ->prepare("DELETE FROM empleado WHERE id = ?");			          
-
+			$stm = $this->pdo->prepare("DELETE FROM empleado WHERE id = ?");			          
 			$stm->execute(array($id));
+
+			$stm = $this->pdo->prepare("DELETE FROM empleado_rol WHERE empleado_id = '".$id."'");			          
+			$stm->execute(array($id));
+
+			$empelado=$this->getEmpleadoById($id);
+
+			if(!$empelado){
+				return 1;
+			}else{
+				return 0;
+			}
+			
 		} catch (Exception $e) 
 		{
 			die($e->getMessage());
@@ -116,11 +126,10 @@ class cliente
 	public function Registrar($data)
 	{
         $data = (object) $data;
-        var_dump($data);
 		try 
 		{
-		$sql = "INSERT INTO empleado (nombre,email,sexo,area_id, boletin,descripcion,roles) 
-		        VALUES (?, ?, ?, ?, ?,?,?)";
+		$sql = "INSERT INTO empleado (nombre,email,sexo,area_id, boletin,descripcion) 
+		        VALUES (?, ?, ?, ?, ?,?)";
 
 		$this->pdo->prepare($sql)
 		     ->execute(
@@ -133,6 +142,13 @@ class cliente
                     $data->descripcion,
                 )
 			);
+			$last_id = $this->pdo->lastInsertId();
+			foreach ($data->roles as $key => $val){
+				$insert_roles = "INSERT INTO empleado_rol (empleado_id,rol_id) 
+		        VALUES (".$last_id.", ".$val.")";
+				$this->pdo->prepare($insert_roles)->execute();
+			}
+			return true;
 		} catch (Exception $e) 
 		{
 			die($e->getMessage());
@@ -163,4 +179,8 @@ if (isset($_POST['listar'])) {
 
 if (isset($_POST['data'])) {
     echo $cliente->validate($_POST['data']);
+}
+
+if (isset($_POST['userId'])) {
+    echo $cliente->Eliminar($_POST['userId']);
 }
