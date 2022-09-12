@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 12-09-2022 a las 06:57:12
--- Versión del servidor: 10.4.24-MariaDB
--- Versión de PHP: 7.4.29
+-- Servidor: localhost:3306
+-- Tiempo de generación: 12-09-2022 a las 16:23:41
+-- Versión del servidor: 5.7.33
+-- Versión de PHP: 7.4.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -65,8 +65,10 @@ CREATE TABLE `empleado` (
 --
 
 INSERT INTO `empleado` (`id`, `nombre`, `email`, `sexo`, `area_id`, `boletin`, `descripcion`) VALUES
-(3, 'Pedro Pérez', 'pperez@example.co', 'M', 5, 1, 'Hola mundo'),
-(4, 'Amalia Bayona', 'abayona@example.co', 'F', 8, 0, 'Para contactar a Amalia Bayona, puede escribir al correo electrónico abayona@example.co');
+(3, 'Pedro Perez', 'pperez@example.co', 'M', 5, 1, 'Hola mundo'),
+(14, 'Carlos', 'cruiz11@email.com', 'F', 5, 0, 'gdrgdgd'),
+(15, 'Carlos alberto ruiz', 'admin@email.com', 'M', 5, 0, 'todoe le min'),
+(16, 'danieela', 'carlosruiz9704@hotmail.com', 'F', 6, 1, 'ingeniera de software');
 
 -- --------------------------------------------------------
 
@@ -87,8 +89,14 @@ INSERT INTO `empleado_rol` (`empleado_id`, `rol_id`) VALUES
 (3, 4),
 (3, 7),
 (3, 2),
-(4, 1),
-(4, 2);
+(14, 4),
+(14, 6),
+(15, 5),
+(15, 6),
+(15, 7),
+(16, 1),
+(16, 2),
+(16, 3);
 
 -- --------------------------------------------------------
 
@@ -159,7 +167,7 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `empleado`
 --
 ALTER TABLE `empleado`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`

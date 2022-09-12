@@ -109,7 +109,7 @@ function saveEmpleado(data){
                   window.setTimeout(function(){
                     window.location.href = "../index.php";
             
-                }, 4000);
+                }, 3000);
             }else{
                 Swal.fire({
                     title: 'Error!',

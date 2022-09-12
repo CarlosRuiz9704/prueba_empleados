@@ -54,7 +54,7 @@ class cliente
 		}
 	}
 
-	public function getEmpleadoById($id)
+	public function getEmpleadoById($id,$flag)
 	{
 		try 
 		{
@@ -63,7 +63,13 @@ class cliente
 			          
 
 			$stm->execute(array($id));
-			return $stm->fetch(PDO::FETCH_OBJ);
+			if($flag==1){
+				return $stm->fetch(PDO::FETCH_OBJ);
+			}else{
+				return json_encode($stm->fetch(PDO::FETCH_OBJ), JSON_INVALID_UTF8_SUBSTITUTE);
+			}
+			
+			
 		} catch (Exception $e) 
 		{
 			die($e->getMessage());
@@ -80,7 +86,7 @@ class cliente
 			$stm = $this->pdo->prepare("DELETE FROM empleado_rol WHERE empleado_id = '".$id."'");			          
 			$stm->execute(array($id));
 
-			$empelado=$this->getEmpleadoById($id);
+			$empelado=$this->getEmpleadoById($id,1);
 
 			if(!$empelado){
 				return 1;
@@ -96,6 +102,8 @@ class cliente
 
 	public function Actualizar($data)
 	{
+		$data = (object) $data;
+		$ok=true;
 		try 
 		{
 			$sql = "UPDATE empleado SET 
@@ -110,13 +118,25 @@ class cliente
 			$this->pdo->prepare($sql)
 			     ->execute(
 				    array(
-                        $data->Nombre,                        
-                        $data->Apellido,
-                        $data->Correo,
-                        $data->telefono, 
-                        $data->id
+						$data->nombre, 
+						$data->email,
+						$data->sexo, 
+						$data->area, 
+						$data->boletin, 
+						$data->descripcion,
+						$data->id_user,
 					)
 				);
+				$delete = "DELETE FROM empleado_rol WHERE empleado_id = '".$data->id_user."'";
+				$this->pdo->prepare($delete)->execute();
+
+				foreach ($data->roles as $key => $val){
+					$insert_roles = "INSERT INTO empleado_rol (empleado_id,rol_id) 
+					VALUES (".$data->id_user.", ".$val.")";
+					$this->pdo->prepare($insert_roles)->execute();
+				}
+
+				return 1;
 		} catch (Exception $e) 
 		{
 			die($e->getMessage());
@@ -155,10 +175,9 @@ class cliente
 		}
 	}
 
-    public function validate($datos){
+    public function validate($datos,$flag){
         $data=array();
         parse_str($datos, $data);
-        
         if(!array_key_exists("boletin", $data)){
             $data['boletin']=0;
         }
@@ -167,7 +186,12 @@ class cliente
             return false;
         }
 
-        return $this->Registrar($data);
+		if($flag == 1){
+			return $this->Registrar($data);
+		}else{
+			return $this->Actualizar($data);
+		}
+        
     }
 }
 
@@ -178,9 +202,17 @@ if (isset($_POST['listar'])) {
 }
 
 if (isset($_POST['data'])) {
-    echo $cliente->validate($_POST['data']);
+    echo $cliente->validate($_POST['data'],1);
 }
 
 if (isset($_POST['userId'])) {
     echo $cliente->Eliminar($_POST['userId']);
+}
+
+if (isset($_POST['userIdEdit'])) {
+    echo($cliente->getEmpleadoById($_POST['userIdEdit'],2)); 
+}
+
+if (isset($_POST['dataUpdate'])) {
+    echo ($cliente->validate($_POST['dataUpdate'],2)); 
 }

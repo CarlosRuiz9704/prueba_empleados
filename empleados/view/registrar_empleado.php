@@ -46,7 +46,7 @@
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sexo" value="F" id="flexRadioDefault2">
+                        <input class="form-check-input" type="radio" name="sexo" value="F" id="femenino">
                         <label class="form-check-label" for="flexRadioDefault2">
                             Femenino
                         </label>
@@ -92,6 +92,8 @@
             <button type="button" class="btn btn-primary" onclick="validarFrom()">Guardar</button>
         </form>
     </div>
+
+
 
 </body>
 
